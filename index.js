@@ -3,9 +3,8 @@ const inputs = document.querySelectorAll(
   'input[type="text"], input[type="password"]'
 );
 
-// on pointe la progress bar :
-const progressBar = document.getElementById("progress-bar")
-
+// on pointe la progress-bar :
+const progressBar = document.getElementById("progress-bar");
 
 // on stock les valeur qui seront envoyé dans des variables :
 let pseudo, email, password, confirmPass;
@@ -73,7 +72,32 @@ const emailChecker = (value) => {
   }
 };
 
-const passwordChecker = (value) => {};
+const passwordChecker = (value) => {
+  progressBar.classList = "";
+  // regex MDP contenant au minimum : 1 Maj 1 Min 1 Chiffre 1 Symbol
+  if (
+    !value.match(
+      /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/
+    )
+  ) {
+    errorDisplay(
+      "password",
+      "8 caractères minimum dont une Maj, un chiffre et un caractère spécial"
+    );
+    progressBar.classList.add("progressRed");
+    password = null;
+    // si le MPD a moins de 12 caractères on valide , mais avec une progress-bar a 67%
+  } else if (value.length < 12) {
+    errorDisplay("password", "", true);
+    progressBar.classList.add("progressBlue");
+    password = value;
+    // si le MPD a plus de 12 caractères on valide avec une progress-bar a 100%
+  } else {
+    errorDisplay("password", "", true);
+    progressBar.classList.add("progressGreen");
+    password = value;
+  }
+};
 
 const confirmChecker = (value) => {};
 
