@@ -3,19 +3,51 @@ const inputs = document.querySelectorAll(
   'input[type="text"], input[type="password"]'
 );
 
-const pseudoChecker = (value) => {
-  const pseudoContainer = document.querySelector(".pseudo-container");
-  const errorDisplay = document.querySelector(".pseudo-container > span");
+// on stock les valeur qui seront envoyé dans des variables :
+let pseudo, email, password, confirmPass;
 
-  if (value.length > 0 && (value.length < 3 || value.length > 20)) {
-    pseudoContainer.classList.add("error");
-    errorDisplay.textContent = "Le pseudo doit faire entre 3 et 20 caractères";
-  } else if (!value.match(/^[a-zA-Z0-9_.-]*$/)) {
-    pseudoContainer.classList.add("error");
-    errorDisplay.textContent =
-      "Le pseudo ne doit pas contenir de caractères spéciaux";
+// fonction gestion de l'affichage des erreurs
+const errorDisplay = (tag, message, valid) => {
+  // on pointe les éléments de manière dynamique :
+  const container = document.querySelector("." + tag + "-container");
+  const span = document.querySelector("." + tag + "-container > span");
+
+  // Si l'entrée n'est pas valide ..
+  if (!valid) {
+    // on ajoute la classe .error
+    container.classList.add("error");
+    // et un message d'erreur (dynamique) dans le span dedié
+    span.textContent = message;
+    // sinon
   } else {
-    pseudoContainer.classList.remove("error");
+    // on retire la class .error au container
+    container.classList.remove("error");
+    // et on peut aussi afficher un message dans le span
+    span.textContent = message;
+  }
+};
+
+// Validation du Pseudo :
+const pseudoChecker = (value) => {
+  // on teste la longeur du Pseudo saisi
+  if (value.length > 0 && (value.length < 3 || value.length > 20)) {
+    errorDisplay("pseudo", "Le pseudo doit contenir entre 3 et 20 caractères");
+    pseudo = null; // pour ne pas incrémenter un pseudo non valide
+
+    // on vérifie qu'il n'a pas de caractères spéciaux
+  } else if (!value.match(/^[a-zA-Z0-9_.-]*$/)) {
+    errorDisplay(
+      "pseudo",
+      "Le pseudo ne doit pas contenir de caractères spéciaux"
+    );
+    pseudo = null; // pour ne pas incrémenter un pseudo non valide
+
+    // si il n'y a pas d'erreurs
+  } else {
+    // on retire la class .error et on dit valid=true
+    errorDisplay("pseudo", "", true);
+    // passe la valeur (valide) a la variable pseudo
+    pseudo = value;
   }
 };
 
