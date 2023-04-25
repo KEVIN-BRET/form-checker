@@ -3,6 +3,10 @@ const inputs = document.querySelectorAll(
   'input[type="text"], input[type="password"]'
 );
 
+// on pointe la progress bar :
+const progressBar = document.getElementById("progress-bar")
+
+
 // on stock les valeur qui seront envoyé dans des variables :
 let pseudo, email, password, confirmPass;
 
@@ -54,7 +58,20 @@ const pseudoChecker = (value) => {
 // Plutot que de mettre tout ce code dans chaque fonction,
 // on va créer un fonction errorDisplay() qui va gérer l'affichage des erreurs
 
-const emailChecker = (value) => {};
+const emailChecker = (value) => {
+  // si l'email n'est pas valide (regex email)
+  if (!value.match(/^[\w_-]+@[\w_-]+\.[a-z]{2,4}$/i)) {
+    // on affiche le message d'erreur
+    errorDisplay("email", "L'adresse mail n'est pas valide");
+    // on n'incrémente pas la variable email
+    email = null;
+  } else {
+    // on retire la class .error et on dit valid=true
+    errorDisplay("email", "", true);
+    // on incrémente la variable email
+    pseudo = value;
+  }
+};
 
 const passwordChecker = (value) => {};
 
