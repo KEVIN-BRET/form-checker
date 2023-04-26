@@ -1,3 +1,6 @@
+// On pointe le formulaire :
+const form = document.querySelector("form");
+
 // On pointe vers tout les inputs :
 const inputs = document.querySelectorAll(
   'input[type="text"], input[type="password"]'
@@ -59,7 +62,7 @@ const pseudoChecker = (value) => {
 
 const emailChecker = (value) => {
   // si l'email n'est pas valide (regex email)
-  if (!value.match(/^[\w_-]+@[\w_-]+\.[a-z]{2,4}$/i)) {
+  if (!value.match(/^[\w_.-]+@[\w_-]+\.[a-z]{2,4}$/i)) {
     // on affiche le message d'erreur
     errorDisplay("email", "L'adresse mail n'est pas valide");
     // on n'incrémente pas la variable email
@@ -68,13 +71,15 @@ const emailChecker = (value) => {
     // on retire la class .error et on dit valid=true
     errorDisplay("email", "", true);
     // on incrémente la variable email
-    pseudo = value;
+    email = value;
   }
 };
 
+// validation du MDP :
 const passwordChecker = (value) => {
+  // on réinitialise la progess-bar
   progressBar.classList = "";
-  // regex MDP contenant au minimum : 1 Maj 1 Min 1 Chiffre 1 Symbol
+  // si invalid (regex MDP contenant au minimum : 1 Maj 1 Min 1 Chiffre 1 Symbol)
   if (
     !value.match(
       /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/
@@ -97,9 +102,23 @@ const passwordChecker = (value) => {
     progressBar.classList.add("progressGreen");
     password = value;
   }
+  // on applique le confirmChecker() seulement si confirmPass() est true
+  if (confirmPass) confirmChecker(confirmPass);
 };
 
-const confirmChecker = (value) => {};
+// confirmation du MDP :
+const confirmChecker = (value) => {
+  // si la valeur est différent du MDP
+  if (value !== password) {
+    // on affiche un msg d'erreur
+    errorDisplay("confirm", "Les mots de passe ne correspondent pas");
+    confirmPass = false;
+  } else {
+    // sinon on valide
+    errorDisplay("confirm", "", true);
+    confirmPass = true;
+  }
+};
 
 // On ajoute un évènement à chaque input :
 inputs.forEach((input) =>
@@ -124,3 +143,28 @@ inputs.forEach((input) =>
     }
   })
 );
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (pseudo && email && password && confirmPass) {
+    const data = {
+      pseudo, // = pseudo: pseudo,
+      email, // = email: email,
+      password, // = password: password
+    };
+
+    console.log(data);
+
+    inputs.forEach((input) => (input.value = ""));
+    progressBar.classList = "";
+
+    pseudo = null;
+    email = null;
+    password = null;
+    confirmPass = null;
+    alert("Inscription validé !");
+  } else {
+    alert("Veuillez remplir les champs correctement");
+  }
+});
